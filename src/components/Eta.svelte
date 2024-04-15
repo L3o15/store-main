@@ -1,21 +1,15 @@
 <script>
   import { onMount } from 'svelte';
   import Chart from 'chart.js/auto';
-
-
+  import customers from '../data/shopping_trends_updated.json';
+  let items = [];
   let canvasElement;
 
   // Uso l'hook onMount per caricare i dati non appena il componente viene montato.
   onMount(async () => {
-    const response = await fetch('/shopping_trends_updated.csv');
-    if (response.ok) {
-      const csvText = await response.text();
-      const items = parseCSV(csvText);
+      items = customers;
       const ageData = prepareAgeData(items);
       updateBarChart(ageData);
-    } else {
-      console.error('Failed to fetch data:', response.status);
-    }
   });
 
   function parseCSV(csvText) {

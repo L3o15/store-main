@@ -1,7 +1,7 @@
 <script>
 
   import { onMount } from 'svelte';
-
+  import customers from '../data/shopping_trends_updated.json';
   
   let items = [];
   let categories = new Set();
@@ -9,22 +9,10 @@
   let filterPrice = '';
 
 onMount(() => {
-  fetch('/shopping_trends_updated.csv')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch data: ' + response.status);
-      }
-      return response.text();
-    })
-    .then(csvText => {
-      items = parseCSV(csvText).slice(0, 3900);
-      // Assumendo che `categories` sia stato definito altrove come un Set
-      items.forEach(item => categories.add(item.Category));
-      items.sort((a, b) => a.Category.localeCompare(b.Category));
-    })
-    .catch(error => {
-      console.error(error.message);
-    });
+    items = customers
+    // Assumendo che `categories` sia stato definito altrove come un Set
+    items.forEach(item => categories.add(item.Category));
+    items.sort((a, b) => a.Category.localeCompare(b.Category));
 });
 
 
