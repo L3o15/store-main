@@ -1,49 +1,25 @@
 <script>
   import { onMount } from 'svelte';
   import Chart from 'chart.js/auto';
-
+  import customers from '../data/shopping_trends_updated.json'
   let canvasElement;
+  let items = [];
   let totalBuyers = 0;
   let maschiPercentage = "";
   let femminePercentage = "";
 
 onMount(() => {
-  fetch('/shopping_trends_updated.csv')
-    .then(response => {
-      if (response.ok) {
-        return response.text();
-      } else {
-        throw new Error('Failed to fetch data: ' + response.status);
-      }
-    })
-    .then(csvText => {
-      const items = parseCSV(csvText);
+  
+      items = customers;
       const genderCounts = countGenders(items);
 
       // Calcola totali e percentuali dopo aver ottenuto genderCounts
       totalBuyers = Object.values(genderCounts).reduce((acc, curr) => acc + curr, 0);
       maschiPercentage = ((genderCounts.Maschi / totalBuyers) * 100).toFixed(2);
       femminePercentage = ((genderCounts.Femmine / totalBuyers) * 100).toFixed(2);
-
       updateChart(genderCounts);
-    })
-    .catch(error => {
-      console.error(error.message);
-    });
 });
 
-
-  function parseCSV(csvText) {
-    const lines = csvText.split('\n');
-    const headers = lines.shift().split(',');
-    return lines.map(line => {
-      const values = line.split(',');
-      return headers.reduce((object, header, index) => {
-        object[header] = values[index];
-        return object;
-      }, {});
-    });
-  }
 
   function countGenders(items) {
     return items.reduce((acc, item) => {
